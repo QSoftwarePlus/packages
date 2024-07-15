@@ -1,0 +1,1 @@
+export const xUserTypeHeader = 'x-user-type'

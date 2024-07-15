@@ -1,0 +1,3 @@
+*.feelgood.localhost
+
+reverse_proxy docker.localhost:80

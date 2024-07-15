@@ -1,0 +1,23 @@
+{
+    "login": {
+        "signIn": "Ingresar",
+        "email": "email",
+        "password": "password",
+        "forgotPassword": "Olvido su contraseña?",
+        "signUp": "Sign Up",
+        "signUpWithGoogle": "Registrarse con Google",
+        "signUpWithFacebook": "Registrarse con Facebook",
+        "signInWithGoogle": "Ingresar con Google",
+        "signInWithFacebook": "Ingresar con Facebook"
+    },
+    "register": {
+        "register": "Registrarse",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "username": "username"
+    },
+    "languages": {
+        "en": "EN - Ingles",
+        "es": "ES - Español"
+    }
+}

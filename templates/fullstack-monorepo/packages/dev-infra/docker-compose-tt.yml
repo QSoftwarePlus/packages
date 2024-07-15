@@ -1,0 +1,76 @@
+version: '3'
+
+volumes:
+  my-db:
+
+networks:
+  feelgood_network:
+    name: feelgood_network
+
+services:
+  localstack:
+    networks:
+      - feelgood_network
+    image: localstack/localstack:latest
+    ports:
+      - '4566:4566'
+      - '4510-4559:4510-4559'
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SERVICES=s3, sqs, ses, ecr, lambda, sns
+      - DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=testing
+      - AWS_SECRET_ACCESS_KEY=testing
+    volumes:
+      - ./localstack-script.sh:/etc/localstack/init/ready.d/script.sh
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - ./aws:/etc/localstack/init/ready.d
+      - './aws/cors.json:/opt/code/localstack/cors.json'
+
+  feelgood_reverse_proxy:
+    container_name: feelgood_reverse_proxy
+    image: traefik:latest
+    command:
+      - '--providers.file.filename=/path/to/dynamic.yml'
+      - '--api.dashboard=true'
+      - '--api.insecure=true'
+    volumes:
+      - ./config.yml:/path/to/dynamic.yml
+    ports:
+      - '80:80'
+      - '8080:8080'
+    extra_hosts:
+      - 'docker.host:host-gateway'
+    networks:
+      - feelgood_network
+
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'feelgood'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'admin'
+      MYSQL_ROOT_PASSWORD: 'admin'
+    ports:
+      - '3307:3306'
+    networks:
+      - feelgood_network
+    expose:
+      - '3307'
+    volumes:
+      - my-db:/var/lib/mysql
+    extra_hosts:
+      - 'docker.localhost:host-gateway'
+
+  tls-termination:
+    container_name: feelgood-tls-termination
+    image: caddy:latest
+    extra_hosts:
+      - 'docker.localhost:host-gateway'
+    ports:
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - feelgood_network

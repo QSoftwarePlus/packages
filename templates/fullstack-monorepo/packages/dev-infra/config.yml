@@ -1,0 +1,36 @@
+http:
+  routers:
+    insurer:
+      rule: Host(`insurer.feelgood.localhost`)
+      priority: 1
+      service: insurer
+    customer:
+      rule: Host(`customer.feelgood.localhost`)
+      priority: 1
+      service: customer
+    api:
+      rule: Host(`api.feelgood.localhost`)
+      priority: 1
+      service: api
+    provider:
+      rule: Host(`provider.feelgood.localhost`)
+      priority: 1
+      service: provider
+
+  services:
+    insurer:
+      loadBalancer:
+        servers:
+          - url: http://docker.host:4000
+    provider:
+      loadBalancer:
+        servers:
+          - url: http://docker.host:4001
+    customer:
+      loadBalancer:
+        servers:
+          - url: http://docker.host:4007
+    api:
+      loadBalancer:
+        servers:
+          - url: http://docker.host:3001

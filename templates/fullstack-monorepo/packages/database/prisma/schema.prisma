@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
+}
+
+generator kysely {
+  provider = "prisma-kysely"
+  output   = "../kysely"
+  fileName = "types.ts"
+}
+
+generator json {
+  provider  = "prisma-json-types-generator"
+  namespace = "PrismaJson"
+  // clientOutput = "<finds it automatically>"
+  // (./ -> relative to schema, or an importable path to require() it)
+  // useType = "MyType"
+  // In case you need to use a type, export it inside the namespace and we will add a index signature to it
+  // (e.g.  export namespace PrismaJson { export type MyType = {a: 1, b: 2} }; will generate namespace.MyType["TYPE HERE"])
+}
+
+datasource db {
+  relationMode = "prisma"
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+}
+
+enum UserType {
+  cannabis_consumer
+  doctor
+}
+
+enum PermissionScope {
+  all
+  own
+}
+
+enum PermissionType {
+  can_read_user
+}
+
+model Permission {
+  id    Int              @id @default(autoincrement())
+  type  PermissionType
+  scope PermissionScope?
+  roles Role[]
+
+  @@unique([type, scope])
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String
+  type        UserType
+  base        Boolean      @default(false)
+  permissions Permission[]
+  user        User[]
+  created_at  DateTime     @default(now())
+
+  @@unique([name, type])
+}
+
+model Person {
+  id         Int    @id @default(autoincrement())
+  email      String @unique
+  first_name String
+  last_name  String
+  User       User[]
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deleted_at DateTime?
+  username   String?   @unique
+  password   String
+  user_type  UserType
+  person     Person    @relation(fields: [person_id], references: [id])
+  person_id  Int
+  role       Role      @relation(fields: [role_id], references: [id])
+  role_id    Int
+
+  @@index([person_id])
+  @@index([role_id])
+}

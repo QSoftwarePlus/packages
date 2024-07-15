@@ -1,0 +1,27 @@
+{
+  "name": "turborepo-shadcn-ui",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "run-pty % npm run dev -w='api' % npm run dev -w='demo-app' % turbo run dev --concurrency 23 --filter='!./apps/*' --filter='!lambdas' --filter='!database' --filter='!templates' % npm run dev -w='database' % npm run dev -w='templates'",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "ui:add": "npm run -w @repo/ui ui:add --"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "prettier": "^3.1.1",
+    "turbo": "latest"
+  },
+  "packageManager": "npm@10.2.3",
+  "workspaces": [
+    "./apps/*",
+    "./packages/*"
+  ],
+  "dependencies": {
+    "@repo/i18n": "^0.0.1",
+    "run-pty": "^5.0.0"
+  }
+}
