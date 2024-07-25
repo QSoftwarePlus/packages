@@ -1,0 +1,23 @@
+version: "3"
+
+volumes:
+  my-qr-health-db-vol:
+
+networks:
+  my_qr_health_network:
+    name: my_qr_health_network
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    volumes:
+      - my-qr-health-db-vol:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "my-qr-health-db"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+    ports:
+      - "5432:5432"
+    networks:
+      - my_qr_health_network

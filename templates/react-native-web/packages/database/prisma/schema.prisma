@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["fullTextIndex", "fullTextSearch"]
+}
+
+generator kysely {
+    provider = "prisma-kysely"
+    output   = "../kysely"
+    fileName = "types.ts"
+}
+
+generator json {
+    provider  = "prisma-json-types-generator"
+    namespace = "PrismaJson"
+    // clientOutput = "<finds it automatically>"
+    // (./ -> relative to schema, or an importable path to require() it)
+    // useType = "MyType"
+    // In case you need to use a type, export it inside the namespace and we will add a index signature to it
+    // (e.g.  export namespace PrismaJson { export type MyType = {a: 1, b: 2} }; will generate namespace.MyType["TYPE HERE"])
+}
+
+datasource db {
+    relationMode = "prisma"
+    provider     = "postgresql"
+    url          = env("DATABASE_URL")
+}
+
+enum UserType {
+    default_user
+}
+
+enum PermissionScope {
+    all
+    own
+}
+
+enum PermissionType {
+    can_read_user
+}
+
+model Permission {
+    id    Int              @id @default(autoincrement())
+    type  PermissionType
+    scope PermissionScope?
+    roles Role[]
+
+    @@unique([type, scope])
+}
+
+model Role {
+    id          Int          @id @default(autoincrement())
+    name        String
+    type        UserType
+    base        Boolean      @default(false)
+    permissions Permission[]
+    user        User[]
+    created_at  DateTime     @default(now())
+
+    @@unique([name, type])
+}
+
+enum PersonIdentificationType {
+    dni
+    cuit
+    ein
+}
+
+enum SexTypes {
+    male
+    female
+    other
+}
+
+model Person {
+    id                  Int                       @id @default(autoincrement())
+    email               String                    @unique
+    first_name          String
+    last_name           String
+    profile_photo       String?                   @db.Text
+    age                 Int?
+    weight              Float?
+    height              Float?
+    has_children        Boolean?
+    childrens           Int?
+    identification_type PersonIdentificationType?
+    identification      String?
+    birth_date          DateTime?
+    sex                 SexTypes?
+    country             String?
+    state               String?
+    city                String?
+    address             String?
+    zip_code            String?
+    have_reprocann      Boolean?
+    User                User[]
+}
+
+enum IdentityProviderType {
+    google
+    facebook
+    microsoft
+}
+
+model IdentityProvider {
+    id            Int                  @id @default(autoincrement())
+    provider_id   String
+    provider_type IdentityProviderType
+    user          User                 @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id       Int
+
+    @@unique([provider_id, provider_type, user_id])
+    @@index([user_id])
+}
+
+model User {
+    id                    Int                    @id @default(autoincrement())
+    createdAt             DateTime               @default(now())
+    updatedAt             DateTime               @updatedAt
+    deleted_at            DateTime?
+    username              String?                @unique
+    password              String?
+    user_type             UserType
+    person                Person                 @relation(fields: [person_id], references: [id])
+    person_id             Int
+    role                  Role                   @relation(fields: [role_id], references: [id])
+    role_id               Int
+    idps                  IdentityProvider[]
+
+    @@index([person_id])
+    @@index([role_id])
+}

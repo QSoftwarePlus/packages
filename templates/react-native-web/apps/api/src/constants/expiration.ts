@@ -1,0 +1,5 @@
+export const FIVE_MINUTES_IN_SECONDS = 300;
+
+export const ONE_DAY_IN_SECONDS = 86400;
+
+export const ACCESS_TOKEN_LONG_MS_EXPIRATION = 525600 * 60 * 950;

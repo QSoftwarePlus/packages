@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "strictNullChecks": true,
+    "module": "commonjs",
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2017",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "composite": true,
+    "baseUrl": "./",
+    "rootDir": "./",
+    "declaration": true,
+    "outDir": "dist"
+  },
+  "exclude": [
+    "packages/**/tests/**",
+    "packages/**/dist/**"
+  ]
+}

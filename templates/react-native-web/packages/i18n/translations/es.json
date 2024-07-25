@@ -1,0 +1,7 @@
+{
+    "welcome": "Hello",
+    "name": "Charlie",
+    "nested": {
+        "key": "Nested key"
+    }
+}

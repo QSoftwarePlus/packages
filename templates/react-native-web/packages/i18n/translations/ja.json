@@ -1,0 +1,7 @@
+{
+    "welcome": "こんにちは",
+    "name": "Charlie",
+    "nested": {
+        "key": "Nested key"
+    }
+}

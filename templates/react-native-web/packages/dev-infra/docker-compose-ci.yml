@@ -1,0 +1,17 @@
+version: '3.4'
+
+volumes:
+  my-db-test-vol:
+
+services:
+  postgres-test:
+    container_name: postgres-test
+    image: postgres:latest
+    volumes:
+      - my-db-test-vol:/var/lib/postgresql/test-data
+    environment:
+      POSTGRES_DB: "my-db-test"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+    ports:
+      - "5432:5432"

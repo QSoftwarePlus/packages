@@ -1,0 +1,13 @@
+{
+    "name": "dev-infra",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "dev": "docker-compose up -d --remove-orphans || docker compose up -d --remove-orphans"
+    },
+    "keywords": [],
+    "author": "Rodrigo Crespo",
+    "license": "ISC"
+  }
